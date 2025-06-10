@@ -10,7 +10,6 @@ const io = new Server(server);
 const DATA_FILE = './data/text.json';
 let sharedDelta = { ops: [] };
 
-// Load saved content
 if (fs.existsSync(DATA_FILE)) {
   try {
     sharedDelta = JSON.parse(fs.readFileSync(DATA_FILE));
