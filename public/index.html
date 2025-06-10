@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Community text editor</title>
+  <link href="/reqs/quill.snow.css" rel="stylesheet" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: sans-serif;
+    }
+  
+    .ql-toolbar.ql-snow {
+      font-size: 18px;
+    }
+  
+    .ql-container {
+      height: calc(100% - 60px); /* make room for toolbar */
+      font-size: 18px;
+      padding: 1rem;
+      line-height: 1.6;
+    }
+  
+    #editor-container {
+      height: 100%;
+    }
+  </style>
+  
+</head>
+<body>
+  <div id="editor-container"></div>
+
+  <script src="/reqs/quill.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const quill = new Quill('#editor-container', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          [{ header: [1, 2, false] }],
+          ['bold', 'italic', 'underline'],
+          ['link', 'code-block'],
+          [{ color: [] }, { background: [] }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['clean']
+        ]
+      }
+    });
+
+    let silent = false;
+
+    socket.on('init', (delta) => {
+      silent = true;
+      quill.setContents(delta);
+      silent = false;
+    });
+
+    socket.on('update', (delta) => {
+      silent = true;
+      quill.setContents(delta);
+      silent = false;
+    });
+
+    quill.on('text-change', () => {
+      if (!silent) {
+        const delta = quill.getContents();
+        socket.emit('update', delta);
+      }
+    });
+  </script>
+</body>
+</html>
