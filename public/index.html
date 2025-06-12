@@ -58,11 +58,31 @@
       silent = false;
     });
 
-    socket.on('update', (delta) => {
+    const Delta = Quill.import('delta');
+
+    socket.on('update', (newDelta) => {
       silent = true;
-      quill.setContents(delta);
+
+      const current = quill.getContents();
+      const incoming = new Delta(newDelta);
+      const diff = current.diff(incoming);
+
+      if (diff.ops.length > 0) {
+        const selection = quill.getSelection();
+        quill.updateContents(diff);
+
+        if (selection) {
+          const length = quill.getLength();
+          const index = Math.min(selection.index, length - 1);
+          const selLength = Math.min(selection.length, length - index);
+          quill.setSelection(index, selLength);
+        }
+      }
+
       silent = false;
     });
+
+
 
     quill.on('text-change', () => {
       if (!silent) {
