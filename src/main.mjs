@@ -2,6 +2,7 @@ import { __dirname,copySkel } from "./utils.mjs";
 import { AppDatabase } from './database.mjs';
 import Path from 'path';
 import fs from 'fs';
+import { start as start_server } from "./server.mjs";
 
 
 async function initConfig(){
@@ -33,6 +34,5 @@ export async function start(){
     const Config = await initConfig();
     const Database = await new AppDatabase(Path.join(__dirname,Config.filepaths.database || "/data/database.db"));
 
-
-
+    await start_server();
 }
