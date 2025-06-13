@@ -42,4 +42,10 @@ EXPOSE 8888
 EXPOSE 5555
 
 # Run the application.
-CMD node server.js
+CMD node src/main.js
+
+
+# to build and push cause i forgort:
+
+# docker build -t legop3/textpage .
+# docker push legop3/textpage
