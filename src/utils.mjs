@@ -7,14 +7,15 @@ const __filename = fileURLToPath(import.meta.url);
 export const __dirname = path.join(path.dirname(__filename),"..");
 
 export async function copySkel(src, dest, notTop) {
-    if (notTop) console.log(`copying skel: ${src} -> ${dest}`);
+    if (!notTop) console.log(`copying skel: ${src} -> ${dest}`);
     try {
         if (!notTop) throw null;
 
         // Check if destination exists
         await fs.access(dest);
         // If it does, skip
-        console.log(`Skipping ${path.normalize(dest || "umm",notTop || '/')}, already exists.`);
+        debugger
+        console.log(`Exists: ${path.relative(notTop||"/",dest)}`);
     } catch {
         const stats = await fs.stat(src);
 
@@ -29,8 +30,8 @@ export async function copySkel(src, dest, notTop) {
             }
         } else {
             await fs.copyFile(src, dest);
-            console.log(`Copied file: ${src} -> ${dest}`);
+            console.log(`Created: ${path.relative(notTop||"/",dest)}`);
         }
     }
-    if (notTop) console.log(`done.`);
+    if (!notTop) console.log(`done.`);
 }
