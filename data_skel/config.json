@@ -1,0 +1,15 @@
+{
+    "-- disable this or this file is disabled":null,
+    "use_skel_config":true,
+
+    "http":{
+        "ip":"TODO",
+        "port":3250
+    },
+    "testing":{
+        "enabled":false
+    },
+    "filepaths":{
+        "database":"data/database.db"
+    }
+}
