@@ -42,7 +42,7 @@ EXPOSE 8888
 EXPOSE 5555
 
 # Run the application.
-CMD node src/main.mjs
+CMD node main.mjs
 
 
 # to build and push cause i forgort:
