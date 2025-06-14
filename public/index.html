@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Community text editor</title>
-  <link href="/reqs/quill.snow.css" rel="stylesheet" />
+  <!-- <link href="/reqs/quill.snow.css" rel="stylesheet" /> -->
   <style>
     html, body {
       height: 100%;
@@ -22,18 +22,97 @@
       line-height: 1.6;
     }
   
-    #editor-container {
+    #editor {
       height: 100%;
     }
   </style>
   
 </head>
 <body>
-  <div id="editor-container"></div>
+  <div id="editor" contenteditable="true"></div>
 
-  <script src="/reqs/quill.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
+  <!-- <script src="/reqs/quill.js"></script> -->
+  <!-- <script src="/socket.io/socket.io.js"></script> -->
+
+  <script type="module">
+    import * as Y from 'https://esm.sh/yjs'
+    import {WebsocketProvider} from 'https://esm.sh/y-websocket'
+
+
+    // create yjs objects
+    // yjs lines array
+    const ydoc = new Y.Doc();
+    const yLines = ydoc.getArray('lines');
+
+    const provider = new WebsocketProvider('ws://localhost:3250', 'room1', ydoc)
+
+    const editor = document.getElementById('editor')
+
+
+    //render list of lines in document from yjs
+    function renderEditor() {
+      editor.innerHTML = ''
+      //for each line, make a div and append it to the editor
+      yLines.forEach((line, i) => {
+        const div = document.createElement('div')
+        div.classList.add('line')
+        div.dataset.index = i
+        div.textContent = line
+        editor.appendChild(div)
+      });
+    }
+
+    //init render and render on remote changes
+    yLines.observeDeep(renderEditor)
+    renderEditor()
+
+    // handle changes made locally
+    editor.addEventListener('keydown', (e) => {
+
+      //get selection
+      const sel = window.getSelection()
+      const lineDiv = sel.anchorNode?.parentElement
+      if (!lineDiv || !lineDiv.classList.contains('line')) return;
+
+      // get cursor position
+      const index = parseInt(lineDiv.dataset.index)
+      const lineText = yLines.get(index)
+      const cursorPos = sel.anchorOffset
+
+      // handle line breaks, reprocess and change indexes
+      if (e.key === 'Enter') {
+        e.preventDefault()
+        const before = lineText.slice(0, cursorPos)
+        const after = lineText.slice(cursorPos)
+
+        // actually apply the changes
+        ydoc.transact(() => {
+          yLines.delete(index, 1)
+          yLines.insert(index, [before, after])
+        })
+      }
+      console.log('updating')
+
+    })
+
+    //sync updates after a manual change in content (not typing)
+    // editor.addEventListener('input', () => {
+    //   const lines = Array.from(editor.children).map(div => div.textContent)
+    //   console.log('lines array manual edit', lines)
+    //   ydoc.transact(() => {
+    //     yLines.delete(0, yLines.length)
+    //     yLines.insert(0, lines)
+    //   })
+    // })
+
+
+
+
+
+  </script>
+
+
+  <!-- <script>
     const socket = io();
 
     const quill = new Quill('#editor-container', {
@@ -90,6 +169,6 @@
         socket.emit('update', delta);
       }
     });
-  </script>
+  </script> -->
 </body>
 </html>
