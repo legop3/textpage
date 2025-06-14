@@ -31,6 +31,7 @@ COPY . .
 
 # Set ownership of app files to 'node'
 RUN chown -R node:node /usr/src/app
+RUN rm -rf node_modules && npm install
 
 # Switch to non-root user AFTER copying files
 USER node

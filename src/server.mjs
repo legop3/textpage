@@ -7,30 +7,38 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-const DATA_FILE = './data/text.json';
-let sharedDelta = { ops: [] };
+const DATA_FILE = './data/fulldoc.json';
+const DELTA_FILE = './data/deltas.json'
+let fulldoc = { ops: [] };
+
+
 
 
 export async function start(){
     if (fs.existsSync(DATA_FILE)) {
         try {
-            sharedDelta = JSON.parse(fs.readFileSync(DATA_FILE));
+            fulldoc = JSON.parse(fs.readFileSync(DATA_FILE));
         } catch (err) {
-            console.error('Failed to load delta:', err);
+            console.error('Failed to load fulldoc:', err);
         }
     }
 
     app.use(express.static('public'));
 
     io.on('connection', (socket) => {
-        socket.emit('init', sharedDelta);
+        console.log(`client connected! sending fulldoc`)
+        socket.emit('init', fulldoc);
 
-        socket.on('update', (delta) => {
-            sharedDelta = delta;
-            fs.writeFileSync(DATA_FILE, JSON.stringify(sharedDelta));
-            socket.broadcast.emit('update', sharedDelta);
+        socket.on('deltaUpdateSend', (delta) => {
+            console.log(`delta recieved, ${JSON.stringify(delta)}`)
+            socket.broadcast.emit('deltaUpdate', delta)
         });
     });
+
+    // io.on('deltaUpdate', (delta) => {
+    //     console.log(`delta recieved! ${delta}`)
+    //     io.emit('deltaUpdate', delta)
+    // })
 
     //TODO attach 'Config.http.ip' to the listener;
     server.listen(Config.http.port, () => {
