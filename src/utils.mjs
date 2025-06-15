@@ -37,7 +37,7 @@ export async function copySkel(src, dest, notTop) {
 }
 
 
-export class WeakValueMap extent Map {
+export class WeakValueMap extends Map {
     constructor(){
         super()
     }
