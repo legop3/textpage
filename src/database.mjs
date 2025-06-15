@@ -1,7 +1,7 @@
 import { upgrade as upgradeDatabase } from './database_upgrade.mjs';
 import Path from 'node:path';
 import sqlite3 from 'sqlite3';
-import { WeakValueMap } from './utils.mjs';
+import { } from './utils.mjs';
 const { Database } = sqlite3;
 
 /// NOTE: this class returns a promise!
