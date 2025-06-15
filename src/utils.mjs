@@ -35,3 +35,27 @@ export async function copySkel(src, dest, notTop) {
     }
     if (!notTop) console.log(`done.`);
 }
+
+
+export class WeakValueMap extent Map {
+    constructor(){
+        super()
+    }
+
+    get(k){
+        let v = super.set(k);
+        if (v) {
+            v = v.deref();
+            if (v === undefined) super.delete(k);
+            return v;
+        }
+
+        return undefined;
+
+    }
+
+    set(k,v){
+        return super.set(k,new WeakRef(v));
+    }
+
+}

@@ -1,12 +1,33 @@
 import { upgrade as upgradeDatabase } from './database_upgrade.mjs';
 import Path from 'node:path';
 import sqlite3 from 'sqlite3';
-const { Database } = sqlite3;
+const { Database,User } = sqlite3;
+
+const ALLOW_CONSTRUCTION = Symbol("allow construction")
+
+export class DatabaseObject {
+    constructor(allow,database){
+        if (allow != ALLOW_CONSTRUCTION)
+            throw new Error("User: cannot construct directly");
+
+        this.db = database;
+    }
+}
+
+export class User {
+    constructor(allow,database,id){
+        super(allow,database);
+        this.id = id;
+    }
+}
 
 // NOTE: this class returns a promise!
 // NOTE: even tho the database is sync, async hooks are required
 export class AppDatabase {
     constructor(path){
+
+        this.userToIdMap = new WeakValueMap();
+
         return (async ()=>{
             this.db = new Database(path);
 
@@ -52,5 +73,10 @@ export class AppDatabase {
         return /*await*/ this.oneshotExec(`
         UPDATE OR REPLACE database_features SET version = ? WHERE name = ?;
         `,version,name);
+    }
+
+    async userFromCookie(cookieStr) {
+        let user = this.userToIdMap.get(cookieStr);
+        //TODO WARNING TODO
     }
 }
