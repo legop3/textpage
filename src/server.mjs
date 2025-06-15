@@ -12,8 +12,6 @@ const DELTA_FILE = './data/deltas.json'
 let fulldoc = { ops: [] };
 
 
-
-
 export async function start(){
     if (fs.existsSync(DATA_FILE)) {
         try {
