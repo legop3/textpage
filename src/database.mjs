@@ -4,36 +4,15 @@ import sqlite3 from 'sqlite3';
 import { WeakValueMap } from './utils.mjs';
 const { Database } = sqlite3;
 
-
-const ALLOW_CONSTRUCTION = Symbol("allow construction")
-
-export class DatabaseObject {
-    constructor(allow,database){
-        if (allow != ALLOW_CONSTRUCTION)
-            throw new Error("User: cannot construct directly");
-
-        this.db = database;
-    }
-}
-
-export class User extends DatabaseObject {
-    constructor(allow,database,id){
-        super(allow,database);
-        this.id = id;
-    }
-}
-
-// NOTE: this class returns a promise!
-// NOTE: even tho the database is sync, async hooks are required
+/// NOTE: this class returns a promise!
+/// NOTE: even tho the database is sync, async hooks are required
 export class AppDatabase {
     constructor(path){
-
-        this.userToIdMap = new WeakValueMap();
 
         return (async ()=>{
             this.db = new Database(path);
 
-            await this.oneshotExec(`
+            await this.exec(`
             CREATE TABLE IF NOT EXISTS "database_features" (
                 "name"	TEXT NOT NULL UNIQUE,
                 "version"	INTEGER NOT NULL,
@@ -45,7 +24,7 @@ export class AppDatabase {
         })();
     }
 
-    async get1value(querry,...args){
+    async getSingle(querry,...args){
         const {promise,resolve,reject} = Promise.withResolvers();
         this.db.get(querry, args, (err,col)=>{
             if(err) return reject(err);
@@ -56,14 +35,14 @@ export class AppDatabase {
 
     /// in case we move database langs, this will catch us a lot of headaches.
     /// it's just a simple "run this and wait, no output" function
-    async oneshotExec(querry,...args){
+    async exec(querry,...args){
         const {promise,resolve,reject} = Promise.withResolvers();
         this.db.run(querry, args, (err)=> err ? reject(err) : resolve() );
         return promise;
     }
 
     /*async*/ getFeature(name){
-        return /*await*/ this.get1value(`
+        return /*await*/ this.getSingle(`
         SELECT version from database_features where name = ?;
         `,name);
     }
@@ -72,13 +51,20 @@ export class AppDatabase {
         version = parseInt(version);
         if (isNaN(version)) throw new Error("setFeature: invalid version");
 
-        return /*await*/ this.oneshotExec(`
+        return /*await*/ this.exec(`
         UPDATE OR REPLACE database_features SET version = ? WHERE name = ?;
         `,version,name);
     }
 
-    async userFromCookie(cookieStr) {
-        let user = this.userToIdMap.get(cookieStr);
-        //TODO WARNING TODO
+    /*async*/ cookieToUID(cookieStr) {
+        return /*await*/ this.getSingle(`SELECT userid from cookies where cookie = ?`,cookieStr);
+    }
+
+    /*async*/ handleToUID(name) {
+        return /*await*/ this.getSingle(`SELECT id from users where name = ?`,name)
+    }
+
+    /*async*/ UIDToHandle(name) {
+        return /*await*/ this.getSingle(`SELECT id from users where name = ?`,name);
     }
 }

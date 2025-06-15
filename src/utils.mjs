@@ -14,7 +14,7 @@ export async function copySkel(src, dest, notTop) {
         // Check if destination exists
         await fs.access(dest);
         // If it does, skip
-        debugger
+
         console.log(`Exists: ${path.relative(notTop||"/",dest)}`);
     } catch {
         const stats = await fs.stat(src);
@@ -34,28 +34,4 @@ export async function copySkel(src, dest, notTop) {
         }
     }
     if (!notTop) console.log(`done.`);
-}
-
-
-export class WeakValueMap extends Map {
-    constructor(){
-        super()
-    }
-
-    get(k){
-        let v = super.set(k);
-        if (v) {
-            v = v.deref();
-            if (v === undefined) super.delete(k);
-            return v;
-        }
-
-        return undefined;
-
-    }
-
-    set(k,v){
-        return super.set(k,new WeakRef(v));
-    }
-
 }
