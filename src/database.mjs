@@ -1,7 +1,9 @@
 import { upgrade as upgradeDatabase } from './database_upgrade.mjs';
 import Path from 'node:path';
 import sqlite3 from 'sqlite3';
-const { Database,User } = sqlite3;
+import { WeakValueMap } from './utils.mjs';
+const { Database } = sqlite3;
+
 
 const ALLOW_CONSTRUCTION = Symbol("allow construction")
 
@@ -14,7 +16,7 @@ export class DatabaseObject {
     }
 }
 
-export class User {
+export class User extends DatabaseObject {
     constructor(allow,database,id){
         super(allow,database);
         this.id = id;
