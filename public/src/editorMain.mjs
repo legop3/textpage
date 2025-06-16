@@ -76,7 +76,12 @@ socket.on('deltaUpdate', (delta) => {
 
 
 socket.on('replaceDocument', (deltaList,callback) => { //deltaList,callback,callback2
-    console.log(`document load, ${JSON.stringify(deltaList)}`)
+    console.log(`document load, ${deltaList.deltas}`)
+    for (let delta of deltaList.deltas) {
+        console.log(delta)
+        quill.updateContents(delta)
+    }
+
     callback()
 })
 // const Delta = Quill.import('delta');
