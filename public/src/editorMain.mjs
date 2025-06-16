@@ -29,8 +29,6 @@ socket.on('getCookie', (callback) => {
 //     quill.setContents(fulldoc);
 // });
 
-<<<<<<< HEAD
-=======
 // socket.on('request-fulldoc', () => {
 //     fulldocSend = quill.getContents()
 //     socket.emit('fulldoc-fullfill', fulldocSend)
@@ -42,7 +40,6 @@ socket.on('getCookie', (callback) => {
 //     quill.setContents(fulldoc)
 // })
 
->>>>>>> 43d599e (goober)
 socket.on('deltaUpdate', (delta) => {
     // apply the delta to the quill editor
     console.log(`Received delta: ${JSON.stringify(delta)}`);
