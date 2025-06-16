@@ -31,30 +31,22 @@ async function onSocketConnect(socket) {
 
     console.log(`${clientSlug}: connected`);
 
+    socket.on('disconnect',()=>{
+        console.log(`${clientSlug}: disconnected`)
+    })
+
+    // --- sequenced below this line
+
     let cookie = await new Promise((ok,err)=> {
         socket.emit('getCookie',ok);
     });
 
     console.log(`${clientSlug}: got cookie: ${cookie}`);
 
+    // --- register commands below this line
+
 
     socket.broadcast.emit('request-fulldoc')
 
 
-    socket.on('fulldoc-fullfill', (fulldoc) => {
-        console.log(`fulldoc recieved`)
-        socket.emit('fulldoc-push', fulldoc)
-        fs.writeFile(DATA_FILE, JSON.stringify(fulldoc), (err) => {
-            console.log(`file write err: ${err}`)
-        })
-    })
-
-    socket.on('deltaUpdateSend', (delta) => {
-        console.log(`delta recieved, ${JSON.stringify(delta)}`)
-        socket.broadcast.emit('deltaUpdate', delta)
-    });
-
-    socket.on('disconnect',()=>{
-        console.log(`${clientSlug}: disconnected`)
-    })
 }
