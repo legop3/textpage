@@ -1,14 +1,28 @@
-
+import fs from 'fs'
 
 let sessionIDCounter = 0;
 let Database;
 let State;
+
+const DATA_FILE = './data/fulldoc.json';
+
+
 
 export async function start(state){
     Database = state.database;
     State = state;
 
     state.io.on('connection', onSocketConnect);
+
+    // if fulldoc file exists, parse and load it
+    if (fs.existsSync(DATA_FILE)) {
+        try {
+            fulldoc = JSON.parse(fs.readFileSync(DATA_FILE));
+        } catch (err) {
+            console.error('Failed to load fulldoc:', err);
+        }
+    }
+
 }
 
 async function onSocketConnect(socket) {
@@ -24,7 +38,11 @@ async function onSocketConnect(socket) {
     console.log(`${clientSlug}: got cookie: ${cookie}`);
 
 
+    socket.broadcast.emit('request-fulldoc')
 
+    socket.on('fulldoc-fullfill', (fulldoc) => {
+        console.log(`fulldoc, recieved`)
+    })
 
     socket.on('deltaUpdateSend', (delta) => {
         console.log(`delta recieved, ${JSON.stringify(delta)}`)

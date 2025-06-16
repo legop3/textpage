@@ -19,13 +19,13 @@ let Database;
 export async function start(__database){
     state.database = __database;
 
-    if (fs.existsSync(DATA_FILE)) {
-        try {
-            fulldoc = JSON.parse(fs.readFileSync(DATA_FILE));
-        } catch (err) {
-            console.error('Failed to load fulldoc:', err);
-        }
-    }
+    // if (fs.existsSync(DATA_FILE)) {
+    //     try {
+    //         fulldoc = JSON.parse(fs.readFileSync(DATA_FILE));
+    //     } catch (err) {
+    //         console.error('Failed to load fulldoc:', err);
+    //     }
+    // }
 
     await start_socket(state);
 

@@ -27,6 +27,12 @@ socket.on('init', (fulldoc) => {
     quill.setContents(fulldoc);
 });
 
+socket.on('request-fulldoc', () => {
+
+    
+    console.log(`sending fulldoc`)
+})
+
 socket.on('deltaUpdate', (delta) => {
     // apply the delta to the quill editor
     console.log(`Received delta: ${JSON.stringify(delta)}`);
