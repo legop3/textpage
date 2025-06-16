@@ -19,5 +19,8 @@
             "anon":{"displayName":"Anonimous"}
         }
     },
+    "pages":{
+        "auto_create":[0]
+    },
     "sql_autorun":[]
 }

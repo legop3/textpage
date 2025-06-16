@@ -7,8 +7,77 @@ let State;
 const DATA_FILE = './data/fulldoc.json';
 
 // we are storing this as both the document and deltas then added onto it;
-let documentDeltas = [];
-let document = {ops:[]};
+
+const openPages = new Map();
+
+async function getPage(id){
+    let page = openPages.get(id);
+    if(!page){
+        console.log(`page(${id}): pull`);
+        page = await Database.getSingle('select id,title,document from Pages where id = ?',id || 0); //TODO encode and decode document field
+        if(!page) return null;
+
+        page.newDeltas = [];
+
+        let deltas = await Database.getAllWierd('select contents from PageDeltas where pageid = ? ',id || 0);//TODO sortby index
+
+        page.deltas = [].concat(...deltas.map(m=>JSON.parse(m.contents)));
+
+        openPages.set(id,page);
+    }
+
+    return page;
+}
+
+
+async function flushAllPages(){
+    console.log("status: flush all pages")
+    for(const page of openPages.values()){
+        await flushPage(page);
+    }
+}
+
+async function flushPage(page){
+    try {
+        if (page.newDeltas.length > 0){
+            console.log(`page(${page.id}): flushing to database`);
+            let dstr = JSON.stringify(page.newDeltas);
+            await Database.getSingle('INSERT into PageDeltas(pageid,contents) values(?,?)',page.id,dstr);
+            page.newDeltas = [];
+        } else {
+            console.log(`page(${page.id}): no need to flush`);
+        }
+    } catch (e) {
+        console.error("cannot flush page, dumping what would be written data")
+        console.error(dstr);
+    }
+}
+
+async function shutdown(){
+    console.log(`status: shutting down`);
+    await flushAllPages();
+
+    console.log(`status: goodbye`);
+    process.exit()
+}
+
+setInterval(flushAllPages,10000);
+
+
+process.on('uncaughtException',async (err)=>{
+    console.error(err);
+    console.log('signal: EXCEPTION')
+    await shutdown();
+})
+
+process.on('SIGINT',async ()=>{
+    console.log('signal: SIGINT')
+    await shutdown();
+})
+
+process.on('exit',async ()=>{
+
+})
 
 export async function start(state){
     Database = state.database;
@@ -39,6 +108,22 @@ async function onSocketConnect(socket) {
     })
 
     // --- sequenced login process below this line//id:userid,
+
+    console.log(`${clientSlug}: getting page number`)
+    let pageId = await new Promise((ok,err)=> {
+        socket.emit('getYourPage',ok);
+    });
+
+    pageId = parseInt(pageId) || 0;
+    console.log(`${clientSlug}: selected page ${pageId}`);
+    let page = await getPage(pageId);
+
+    if(!page) {
+        console.log(`${clientSlug}: page does not exist, stalling session`)
+        socket.emit('cannotConnect',`page does not exist`);
+        return;
+    }
+
 
 
     while (userid === null){
@@ -96,7 +181,8 @@ async function onSocketConnect(socket) {
 
     socket.on('deltaUpdateSend', (delta) => {
         console.log(`${clientSlug}: delta recieved: ${JSON.stringify(delta)}`)
-        documentDeltas.push(delta);
+        page.deltas.push(delta);
+        page.newDeltas.push(delta);
         socket.broadcast.emit('deltaUpdate', delta)
     });
 
@@ -113,8 +199,8 @@ async function onSocketConnect(socket) {
 
     await new Promise((ok,err)=> {
         socket.emit('replaceDocument',{
-            document:document,
-            deltas:documentDeltas,
+            document:page.document,
+            deltas:page.deltas,
         },ok);
     });
 

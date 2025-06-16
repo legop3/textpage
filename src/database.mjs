@@ -21,7 +21,19 @@ export class AppDatabase {
 
             await upgradeDatabase(this);
 
-            const autocreator = Config.users.auto_create;
+            let autocreator = Config.pages.auto_create;
+            for (const pageid in autocreator){
+                let data = await this.getSingle('SELECT id from Pages where id = ? limit 1',pageid);
+                if (data){
+                    console.log(`pages.auto_create: exists: ${pageid}`);
+                } else {
+                    console.log(`pages.auto_create: creating: ${pageid}`);
+                    await this.getSingle('insert into pages(id,title,document) values(?,?,?)',pageid,"Page "+pageid,"{\"ops\":[]}");
+                }
+            }
+
+
+            autocreator = Config.users.auto_create;
             for (const handle in autocreator){
                 let loginData = await this.getSingle('SELECT id from Users where handle = ? limit 1',handle);
                 if (loginData){
@@ -57,6 +69,15 @@ export class AppDatabase {
         return promise;
     }
 
+    async getAllWierd(querry,...args){
+        const {promise,resolve,reject} = Promise.withResolvers();
+        this.db.all(querry, args, (err,cols)=>{
+            if(err) return reject(err);
+            resolve(cols);
+        });
+        return promise;
+    }
+
     /// in case we move database langs, this will catch us a lot of headaches.
     /// it's just a simple "run this and wait, no output" function
     async exec(querry,...args){
@@ -64,6 +85,8 @@ export class AppDatabase {
         this.db.run(querry, args, (err)=> err ? reject(err) : resolve() );
         return promise;
     }
+
+
 
     async getFeature(name){
         let version = await this.getSingle(`
