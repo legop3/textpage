@@ -2,6 +2,8 @@
 
 const socket = io();
 
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 const quill = new Quill('#editor-container', {
     theme: 'snow',
     modules: {
@@ -122,6 +124,7 @@ socket.on('replaceDocument', async (deltaList, callback) => {
     // use quill's delta thing to combine all deltas into one
     const Delta = Quill.import('delta');
 
+    await delay(700)
     // compose a whole page from quill deltas
     // Marple if you see this, i think you may be able to do this same thing server-side by ->
     // installing quill using npm, then doing the same deltas thing that i did here.
@@ -132,7 +135,7 @@ socket.on('replaceDocument', async (deltaList, callback) => {
 
     // ensure that the UI doesn't freak out when setting contents (cause it was)
     requestAnimationFrame(() => {
-        syncStatus.innerHTML = 'Init synced!';
+        syncStatus.innerHTML = 'Synced!';
         syncStatus.classList.replace('bg-yellow-500', 'bg-blue-300');
     });
 

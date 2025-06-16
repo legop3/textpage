@@ -111,10 +111,17 @@
     <!-- <div class="flex-1" id="editor-wrapper"> -->
       <!-- <div id="quill-toolbar"></div> -->
         <!-- Custom Toolbar -->
-    <div class="relative">
+    <!-- <div class="relative"> -->
     <div id="quill-toolbar" class="overflow-x-auto whitespace-nowrap toolbar-scrollbar">
 
+
       <div class="inline-flex items-center space-x-1">
+
+        <div id="sync-status" class="inline-flex items-center justify-center px-3 h-6 rounded-full bg-red-500 text-white text-sm">
+          Not Synced
+        </div>
+
+
       <span class="ql-formats">
         <select class="ql-header">
           <option selected></option>
@@ -151,15 +158,13 @@
         <button class="ql-clean"></button>
       </span>
 
-      <div class="flex items-center inline pr-1 pl-1">
+      <!-- <div class="flex items-center inline pr-1 pl-1"> -->
 
         <div id="connected-status" class="inline-flex items-center justify-center px-3 h-6 rounded-full bg-red-500 text-white text-sm">
           Disconnected
         </div>
   
-        <div id="sync-status" class="inline-flex items-center justify-center px-3 h-6 rounded-full bg-red-500 text-white text-sm">
-          Not Synced
-        </div>
+
   
         <div id="incoming-status" class="inline-flex items-center justify-center px-3 h-6 rounded-full bg-pink-500 text-white text-sm">
           []
@@ -168,7 +173,7 @@
         <div id="users-online" class="inline-flex items-center justify-center px-3 h-6 rounded-full bg-blue-500 text-white text-sm">
           Users Online: <span id="user-count">0</span>
         </div>
-      </div>
+      <!-- </div> -->
 
 
 
@@ -177,15 +182,15 @@
     </div>
 
     <!-- Scroll hint -->
-  <div class="pointer-events-none absolute top-0 right-0 h-full w-10 bg-gradient-to-l from-white to-transparent flex items-center justify-end">
+  <!-- <div class="pointer-events-none absolute top-0 right-0 h-full w-10 bg-gradient-to-l from-white to-transparent flex items-center justify-end">
     <div class="pointer-events-none mr-1">
       <svg class="w-4 h-4 text-gray-400 animate-bounce-right" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
       </svg>
     </div>
-  </div>
+  </div> -->
   <!-- close the relative -->
-  </div>
+  <!-- </div> -->
 
     <div id="editor-container" class="h-max"></div>
     <!-- </div> -->
