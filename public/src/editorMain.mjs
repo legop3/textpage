@@ -24,11 +24,25 @@ socket.on('getCookie', (callback) => {
     callback('lolol')
 })
 
-socket.on('init', (fulldoc) => {
-    // get full document contents, apply them
-    quill.setContents(fulldoc);
-});
+// socket.on('init', (fulldoc) => {
+//     // get full document contents, apply them
+//     quill.setContents(fulldoc);
+// });
 
+<<<<<<< HEAD
+=======
+// socket.on('request-fulldoc', () => {
+//     fulldocSend = quill.getContents()
+//     socket.emit('fulldoc-fullfill', fulldocSend)
+//     console.log(`sending fulldoc, ${fulldocSend}`)
+// })
+
+// socket.on('fulldoc-push', (fulldoc) => {
+//     console.log('fulldoc recieved')
+//     quill.setContents(fulldoc)
+// })
+
+>>>>>>> 43d599e (goober)
 socket.on('deltaUpdate', (delta) => {
     // apply the delta to the quill editor
     console.log(`Received delta: ${JSON.stringify(delta)}`);
