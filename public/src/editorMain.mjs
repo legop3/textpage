@@ -55,6 +55,11 @@ socket.on('getCookie', (callback) => {
     callback(userUid)
 })
 
+socket.on('getYourPage', (callback) => {
+    callback(0);
+})
+
+
 // socket.on('init', (fulldoc) => {
 //     // get full document contents, apply them
 //     quill.setContents(fulldoc);
