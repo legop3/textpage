@@ -5,17 +5,18 @@ const socket = io();
 const quill = new Quill('#editor-container', {
     theme: 'snow',
     modules: {
-        toolbar: [
-            [{ header: [1, 2, false] }],
-            ['bold', 'italic', 'underline'],
-            ['link', 'code-block', 'image'],
-            [{ color: [] }, { background: [] }],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            ['clean'],
-            [{ 'font': []}],
-            // [{ 'direction': 'rtl '}]
-            [{'script': 'sub'}, {'script': 'super'}]
-        ]
+        // toolbar: [
+        //     [{ header: [1, 2, false] }],
+        //     ['bold', 'italic', 'underline'],
+        //     ['link', 'code-block', 'image'],
+        //     [{ color: [] }, { background: [] }],
+        //     [{ list: 'ordered' }, { list: 'bullet' }],
+        //     ['clean'],
+        //     [{ 'font': []}],
+        //     // [{ 'direction': 'rtl '}]
+        //     [{'script': 'sub'}, {'script': 'super'}]
+        // ]
+        toolbar: '#quill-toolbar'
     }
 });
 
@@ -76,21 +77,78 @@ socket.on('getYourPage', (callback) => {
 //     quill.setContents(fulldoc)
 // })
 
+const incomingStatus = document.getElementById('incoming-status')
 socket.on('deltaUpdate', (delta) => {
     // apply the delta to the quill editor
-    console.log(`Received delta: ${JSON.stringify(delta)}`);
+    // console.log(`Received delta: ${JSON.stringify(delta)}`);
     quill.updateContents(delta);
+    incomingStatus.innerHTML = `${JSON.stringify(delta)}`
 });
 
 
-socket.on('replaceDocument', (deltaList,callback) => { //deltaList,callback,callback2
-    console.log(`document load, ${deltaList.deltas}`)
-    for (let delta of deltaList.deltas) {
-        console.log(delta)
-        quill.updateContents(delta)
-    }
+// old one
+// const syncStatus = document.getElementById('sync-status')
+// socket.on('replaceDocument', async (deltaList,callback) => { //deltaList,callback,callback2
+//     // console.log(`document load, ${deltaList.deltas}`)
+//     const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-    callback()
+//     syncStatus.innerHTML = `Syncing ${deltaList.deltas.length} changes`
+//     syncStatus.classList.remove('bg-red-500')
+//     syncStatus.classList.add('bg-yellow-500')
+
+//     await delay(100)
+
+//     for (let delta of deltaList.deltas) {
+//         // console.log(delta)
+//         quill.updateContents(delta)
+//         // await delay(1)
+//     }
+
+//     syncStatus.innerHTML='Init synced!'
+//     syncStatus.classList.remove('bg-yellow-500')
+//     syncStatus.classList.add('bg-blue-300')
+
+//     callback()
+// })
+
+
+
+//new sync init thing. more complicated but much much faster
+const syncStatus = document.getElementById('sync-status');
+socket.on('replaceDocument', async (deltaList, callback) => {
+    syncStatus.innerHTML = `Syncing ${deltaList.deltas.length} changes`;
+    syncStatus.classList.replace('bg-red-500', 'bg-yellow-500');
+
+    // use quill's delta thing to combine all deltas into one
+    const Delta = Quill.import('delta');
+
+    // compose a whole page from quill deltas
+    // Marple if you see this, i think you may be able to do this same thing server-side by ->
+    // installing quill using npm, then doing the same deltas thing that i did here.
+    // it doesn't seem like it needs a DOM rendered or whatever to do this... but idk
+    const combined = deltaList.deltas.reduce((acc, d) => acc.compose(d), new Delta());
+
+    quill.setContents(combined); // faster than updateContents in loop
+
+    // ensure that the UI doesn't freak out when setting contents (cause it was)
+    requestAnimationFrame(() => {
+        syncStatus.innerHTML = 'Init synced!';
+        syncStatus.classList.replace('bg-yellow-500', 'bg-blue-300');
+    });
+
+    callback();
+});
+
+
+const connectedStatus = document.getElementById('connected-status')
+socket.on('connect', () => {
+    connectedStatus.innerHTML = 'Connected'
+    connectedStatus.classList.replace('bg-red-500', 'bg-green-500')
+})
+
+socket.on('disconnect', () => {
+    connectedStatus.innerHTML = 'Disconnected'
+    connectedStatus.classList.replace('bg-green-500', 'bg-red-500')
 })
 // const Delta = Quill.import('delta');
 
@@ -118,9 +176,9 @@ socket.on('replaceDocument', (deltaList,callback) => { //deltaList,callback,call
 
 // run when text is changed in quill
 quill.on('text-change', (delta, oldDelta, source) => {
-    console.log(`delta: ${JSON.stringify(delta)}`)
-    console.log(`oldDelta: ${JSON.stringify(oldDelta)}`)
-    console.log(`source: ${JSON.stringify(source)}`)
+    // console.log(`delta: ${JSON.stringify(delta)}`)
+    // console.log(`oldDelta: ${JSON.stringify(oldDelta)}`)
+    // console.log(`source: ${JSON.stringify(source)}`)
 
 
     if (source === 'user') {
@@ -133,9 +191,9 @@ quill.on('text-change', (delta, oldDelta, source) => {
 
 // run when selection is changed (when cursor is moved)
 quill.on('selection-change', (range, oldRange, source) => {
-    console.log(`range: ${JSON.stringify(range)}`)
-    console.log(`oldRange: ${JSON.stringify(oldRange)}`)
-    console.log(`source: ${JSON.stringify(source)}`)
+    // console.log(`range: ${JSON.stringify(range)}`)
+    // console.log(`oldRange: ${JSON.stringify(oldRange)}`)
+    // console.log(`source: ${JSON.stringify(source)}`)
 
     if (source === 'user' && range) {
         // send the selection to the server

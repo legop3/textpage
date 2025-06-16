@@ -8,29 +8,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
 
-  
-    .ql-toolbar.ql-snow {
+    /* .ql-toolbar.ql-snow {
       font-size: 18px;
       position:relative;
 
+    } */
+
+    .ql-toolbar {
+      /* position: sticky; */
+      top: 0;
+      /* z-index: 1000; */
+      /* background-color: white; */
+      /* border-bottom: 1px solid #ccc; */
+      /* padding: 10px; */
+      /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+      background-color: #f8f9fa; /* Light gray background */
+      border-bottom: 1px solid #dee2e6; /* Light gray border */
+      z-index: 1000; 
+
+
+      /* padding: 10px; */
+      /* margin-bottom: 10px; */
+      /* height: 60px; */
+      display: flex;
+      position: fixed;
+      width: 100%;
+      top: 0;
     }
+
+    .ql-toolbar .ql-formats {
+      display: inline-flex !important;
+      flex-wrap: nowrap !important;
+      gap: 0.25rem; /* optional spacing between buttons */
+      vertical-align: middle;
+    }
+
   
     .ql-editor {
       /* height: calc(100% - 60px); make room for toolbar */
       font-size: 18px;
+      /* top: 60px; Adjusted to account for the toolbar height */
       /* padding: 0rem; */
       /* line-height: 1.6; */
       /* height: calc(100% - 60px); */
       /* height: calc(100vh - 150px); */
       /* height: 100%; */
       /* padding-bottom: 4rem; */
-      height: auto;
+      /* height: max-content */
+      /* height: calc(100vh - 60px); */
+      /* display: flex; */
+      /* display:contents; */
+      padding-bottom: 4rem; /* Adjusted to account for the footer */
+      padding-top: 4rem;
     }
   
-    #editor-container {
-      /* height: calc(100% - 50px);  */
-      /* height */
-    }
   </style>
   
 </head>
@@ -41,35 +72,83 @@
 
 <body class="h-full m-0">
 
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+    <div class="bg-gray-200 p-6 w-full max-w-md rounded-lg shadow-lg" id="user-bar">
+      <input type="text" id="username" placeholder="Enter your name" class="border border-gray-300 rounded p-2 w-full mb-2" />
+      <div class="flex">
+        <input type="button" value="Set Username / Login" id="login-button" class="bg-blue-500 text-white rounded p-2 mr-2 cursor-pointer hover:bg-blue-600" />
+        <input type="button" value="Current Username: None" id="current-username" class="bg-gray-300 text-black rounded p-2" disabled />
+      </div>
+      <div id="bar-extras" class="hidden mt-4">
+        <h1 class="text-lg font-semibold">Type your username above to create a new user or login</h1>
+      </div>
+    </div>
+  </div>
+  
+
   <div class="flex flex-col h-full">
     <!-- Header / Toolbar -->
-    <!-- <div class="bg-gray-200 p-0 w-full" id="user-bar">
-       <input type="text" name="" id="username" placeholder="Enter your name" class="border border-gray-300 rounded p-0 w-full max-w-xs" />
-       <input type="button" value="Set Username / Login" id="login-button" class="bg-blue-500 text-white rounded p-0 ml-2 cursor-pointer hover:bg-blue-600" />
-       <input type="button" value="Current Username: None" id="current-username" class="bg-gray-300 text-black rounded p-0 ml-2" disabled />
-       <div id="bar-extras" class="hidden">
-        <h1 class="text-lg font-semibold mt-2">Type your username above to create a new user or login</h1>
-       </div>
-    </div> -->
+
 
     <!-- Quill Editor container -->
-    <div class="flex-1" id="editor-wrapper">
-      <div id="quill-toolbar"></div>
-      <div id="editor-container" class="h-max"></div>
+    <!-- <div class="flex-1" id="editor-wrapper"> -->
+      <!-- <div id="quill-toolbar"></div> -->
+        <!-- Custom Toolbar -->
+    <div id="quill-toolbar" class="overflow-x-auto whitespace-nowrap">
+      <div class="inline-flex items-center space-x-1">
+      <span class="ql-formats">
+        <select class="ql-header">
+          <option selected></option>
+          <option value="1"></option>
+          <option value="2"></option>
+        </select>
+      </span>
+      <span class="ql-formats">
+        <button class="ql-bold"></button>
+        <button class="ql-italic"></button>
+        <button class="ql-underline"></button>
+      </span>
+      <span class="ql-formats">
+        <button class="ql-link"></button>
+        <button class="ql-code-block"></button>
+        <button class="ql-image"></button>
+      </span>
+      <span class="ql-formats">
+        <select class="ql-color"></select>
+        <select class="ql-background"></select>
+      </span>
+      <span class="ql-formats">
+        <button class="ql-list" value="ordered"></button>
+        <button class="ql-list" value="bullet"></button>
+      </span>
+      <span class="ql-formats">
+        <select class="ql-font"></select>
+      </span>
+      <span class="ql-formats">
+        <button class="ql-script" value="sub"></button>
+        <button class="ql-script" value="super"></button>
+      </span>
+      <span class="ql-formats">
+        <button class="ql-clean"></button>
+      </span>
+    </div>
     </div>
 
+    <div id="editor-container" class="h-max"></div>
+    <!-- </div> -->
+
     <!-- Footer / Status Bar -->
-    <div class="flex items-center bg-gray-200 p-2 flex-wrap bottom-0 w-full">
+    <div class="flex items-center bg-gray-200 p-2 flex-wrap bottom-0 w-full fixed">
 
       <div id="connected-status" class="inline-flex items-center justify-center px-3 h-6 rounded-full bg-red-500 text-white text-sm">
-        Socket Disconnected
+        Disconnected
       </div>
 
-      <div id="synced-status" class="inline-flex items-center justify-center px-3 h-6 rounded-full bg-red-500 text-white text-sm">
+      <div id="sync-status" class="inline-flex items-center justify-center px-3 h-6 rounded-full bg-red-500 text-white text-sm">
         Not Synced
       </div>
 
-      <div id="latest-delta" class="inline-flex items-center justify-center px-3 h-6 rounded-full bg-pink-500 text-white text-sm">
+      <div id="incoming-status" class="inline-flex items-center justify-center px-3 h-6 rounded-full bg-pink-500 text-white text-sm">
         []
       </div>
 
@@ -81,37 +160,30 @@
 
 
   <script>
-    function showLogin() {
-      const userBar = document.getElementById('user-bar');
-      const editorWrapper = document.getElementById('editor-wrapper');
-      const barExtras = document.getElementById('bar-extras');
-      // show user bar fullscreen
-      userBar.classList.add('h-full')
-      // userBar.classList.remove('hidden');
+    function triggerLogin() {
+      document.getElementById('overlay').classList.remove('hidden');
+      document.getElementById('username').focus();
 
-      // show help text
-      barExtras.classList.remove('hidden');
-
-      // hide editor wrapper
-      editorWrapper.classList.add('hidden');
-
+      document.getElementById('login-button').addEventListener('click', function() {
+        const username = document.getElementById('username').value.trim();
+        if (username) {
+          document.getElementById('current-username').value = `Current Username: ${username}`;
+          document.getElementById('bar-extras').classList.remove('hidden');
+          document.getElementById('overlay').classList.add('hidden');
+          // Emit login event to server
+          socket.emit('login', username);
+        } else {
+          alert('Please enter a valid username.');
+        }
+      });
+      document.getElementById('username').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          document.getElementById('login-button').click();
+        }
+      });
     }
 
-    function hideLogin() {
-      const userBar = document.getElementById('user-bar');
-      const editorWrapper = document.getElementById('editor-wrapper');
-      const barExtras = document.getElementById('bar-extras');
-
-      // hide user bar fullscreen
-      userBar.classList.remove('h-full')
-      // userBar.classList.add('hidden');
-
-      // hide help text
-      barExtras.classList.add('hidden');
-
-      // show editor wrapper
-      editorWrapper.classList.remove('hidden');
-    }
   </script>
 
   <script src="/reqs/quill.js"></script>
