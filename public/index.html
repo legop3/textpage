@@ -6,7 +6,16 @@
   <link href="/reqs/quill.snow.css" rel="stylesheet" />
   <link rel="stylesheet" href="/reqs/tailwind.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <meta name="tile" content="Textpage" />
+  <meta name="description" content="A globally collaborative text editor with real-time syncing." />
+  <meta name="keywords" content="text editor, collaborative, real-time, sync, quill, tailwind" />
+  <meta name="author" content="Textpage devteam" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="msapplication-TileColor" content="#ffffff" />
+
   <link rel="icon" href="/img/favicon.ico" type="image/x-icon" />
   <style>
 
@@ -26,7 +35,7 @@
       /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
       background-color: #f8f9fa; /* Light gray background */
       border-bottom: 1px solid #dee2e6; /* Light gray border */
-      z-index: 1000; 
+      z-index: 10; 
 
 
       /* padding: 10px; */
@@ -91,14 +100,14 @@
 
 <body class="h-full m-0">
 
-  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden z-50">
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 hidden">
     <div class="bg-gray-200 p-6 w-full max-w-md rounded-lg shadow-lg" id="user-bar">
       <input type="text" id="username" placeholder="Enter your name" class="border border-gray-300 rounded p-2 w-full mb-2" />
       <div class="flex">
         <input type="button" value="Set Username / Login" id="login-button" class="bg-blue-500 text-white rounded p-2 mr-2 cursor-pointer hover:bg-blue-600" />
         <input type="button" value="Current Username: None" id="current-username" class="bg-gray-300 text-black rounded p-2" disabled />
       </div>
-      <div id="bar-extras" class="hidden mt-4">
+      <div id="bar-extras" class="mt-4">
         <h1 class="text-lg font-semibold">Type your username above to create a new user or login</h1>
       </div>
     </div>
