@@ -1,10 +1,10 @@
 
 
 export async function upgrade(database){
-    console.log(await database.getFeature("users"));
+    console.log("userfeature",await database.getFeature("users"));
     if(await database.getFeature("users") < 1){
         console.warn("DATABASE UPGRADE: table users");
-        await database.oneshotExec(`CREATE TABLE "users" (
+        await database.exec(`CREATE TABLE "users" (
             "id"	INTEGER NOT NULL,
             "displayName"	TEXT NOT NULL DEFAULT 'New User',
             "handle"	TEXT NOT NULL,
@@ -16,7 +16,7 @@ export async function upgrade(database){
 
     if(await database.getFeature("cookies") < 1){
         console.warn("DATABASE UPGRADE: table cookies");
-        await database.oneshotExec(`
+        await database.exec(`
         CREATE TABLE "Cookies" (
             "cookie"	TEXT NOT NULL,
             "userid"	INTEGER,

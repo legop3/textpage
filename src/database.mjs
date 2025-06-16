@@ -41,10 +41,11 @@ export class AppDatabase {
         return promise;
     }
 
-    /*async*/ getFeature(name){
-        return /*await*/ this.getSingle(`
+    async getFeature(name){
+        let version = await this.getSingle(`
         SELECT version from database_features where name = ?;
         `,name);
+        return version || 0;
     }
 
     /*async*/ setFeature(name,version){
