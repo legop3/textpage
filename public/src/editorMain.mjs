@@ -16,6 +16,8 @@ const quill = new Quill('#editor-container', {
     }
 });
 
+var fulldocSend
+
 // on client init, sent from server on connection
 
 socket.on('getCookie', (callback) => {
@@ -79,6 +81,8 @@ quill.on('text-change', (delta, oldDelta, source) => {
         socket.emit('deltaUpdateSend', delta);
 
     }
+
+    socket.emit()
 })
 
 // run when selection is changed (when cursor is moved)

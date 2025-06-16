@@ -5,7 +5,7 @@ let Database;
 let State;
 
 const DATA_FILE = './data/fulldoc.json';
-
+let fulldoc
 
 
 export async function start(state){
@@ -40,9 +40,13 @@ async function onSocketConnect(socket) {
 
     socket.broadcast.emit('request-fulldoc')
 
+
     socket.on('fulldoc-fullfill', (fulldoc) => {
         console.log(`fulldoc recieved`)
         socket.emit('fulldoc-push', fulldoc)
+        fs.writeFile(DATA_FILE, JSON.stringify(fulldoc), (err) => {
+            console.log(`file write err: ${err}`)
+        })
     })
 
     socket.on('deltaUpdateSend', (delta) => {
