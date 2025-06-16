@@ -45,6 +45,7 @@ export class AppDatabase {
         let version = await this.getSingle(`
         SELECT version from database_features where name = ?;
         `,name);
+        if(version) version = version.version || version;
         return version || 0;
     }
 
@@ -53,7 +54,7 @@ export class AppDatabase {
         if (isNaN(version)) throw new Error("setFeature: invalid version");
 
         return /*await*/ this.exec(`
-        UPDATE OR REPLACE database_features SET version = ? WHERE name = ?;
+        INSERT OR REPLACE INTO database_features (version,name) VALUES (?,?);
         `,version,name);
     }
 
