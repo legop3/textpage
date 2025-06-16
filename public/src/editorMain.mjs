@@ -73,6 +73,10 @@ socket.on('deltaUpdate', (delta) => {
     console.log(`Received delta: ${JSON.stringify(delta)}`);
     quill.updateContents(delta);
 });
+
+socket.on('replaceDocument', (deltaList) => {
+    console.log(`document load, ${JSON.stringify(deltaList)}`)
+})
 // const Delta = Quill.import('delta');
 
 // socket.on('update', (newDelta) => {
