@@ -2,10 +2,12 @@
 <html lang="en" class="h-full">
 <head>
   <meta charset="UTF-8" />
-  <title>Community text editor</title>
+  <title>Textpage</title>
   <link href="/reqs/quill.snow.css" rel="stylesheet" />
   <link rel="stylesheet" href="/reqs/tailwind.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="tile" content="Textpage" />
+  <link rel="icon" href="/img/favicon.ico" type="image/x-icon" />
   <style>
 
     /* .ql-toolbar.ql-snow {
@@ -113,6 +115,7 @@
         <!-- Custom Toolbar -->
     <!-- <div class="relative"> -->
     <div id="quill-toolbar" class="overflow-x-auto whitespace-nowrap toolbar-scrollbar">
+  <div id="incoming-status" class="top-10 right-1 fixed opacity-25">(((())))</div>
 
 
       <div class="inline-flex items-center space-x-1">
@@ -166,12 +169,12 @@
   
 
   
-        <div id="incoming-status" class="inline-flex items-center justify-center px-3 h-6 rounded-full bg-pink-500 text-white text-sm">
+        <!-- <div id="incoming-status" class="inline-flex items-center justify-center px-3 h-6 rounded-full bg-pink-500 text-white text-sm">
           []
-        </div>
+        </div> -->
   
         <div id="users-online" class="inline-flex items-center justify-center px-3 h-6 rounded-full bg-blue-500 text-white text-sm">
-          Users Online: <span id="user-count">0</span>
+          Online: 0
         </div>
       <!-- </div> -->
 
@@ -192,7 +195,10 @@
   <!-- close the relative -->
   <!-- </div> -->
 
-    <div id="editor-container" class="h-max"></div>
+
+    <div id="editor-container" class="h-max">
+
+    </div>
     <!-- </div> -->
 
     <!-- Footer / Status Bar -->

@@ -22,6 +22,9 @@ const quill = new Quill('#editor-container', {
     }
 });
 
+var editcount 
+
+
 // var fulldocSend
 
 function setCookie(name, value, days) {
@@ -85,6 +88,8 @@ socket.on('deltaUpdate', (delta) => {
     // console.log(`Received delta: ${JSON.stringify(delta)}`);
     quill.updateContents(delta);
     incomingStatus.innerHTML = `${JSON.stringify(delta)}`
+    // editcount++
+    // document.title = `Textpage (${editcount} edits)`
 });
 
 
@@ -114,12 +119,13 @@ socket.on('deltaUpdate', (delta) => {
 // })
 
 
-
 //new sync init thing. more complicated but much much faster
 const syncStatus = document.getElementById('sync-status');
 socket.on('replaceDocument', async (deltaList, callback) => {
     syncStatus.innerHTML = `Syncing ${deltaList.deltas.length} changes`;
+    editcount = deltaList.deltas.length
     syncStatus.classList.replace('bg-red-500', 'bg-yellow-500');
+    document.title = `Textpage (${editcount})`
 
     // use quill's delta thing to combine all deltas into one
     const Delta = Quill.import('delta');
@@ -188,6 +194,8 @@ quill.on('text-change', (delta, oldDelta, source) => {
         // send the delta to the server
         socket.emit('deltaUpdateSend', delta);
     }
+    // editcount++
+    // document.title = `Textpage (${editcount} edits)`
 
     // socket.emit()
 })
