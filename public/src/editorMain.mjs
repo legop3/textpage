@@ -49,7 +49,7 @@ socket.on('getCookie', (callback) => {
         console.log(`no userUid cookie, making one`)
         setCookie("userUid", crypto.randomUUID(), 365)
     }
-    callback({userUid, Username: 'testusername'})
+    callback(userUid)
 })
 
 // socket.on('init', (fulldoc) => {
@@ -107,10 +107,9 @@ quill.on('text-change', (delta, oldDelta, source) => {
     if (source === 'user') {
         // send the delta to the server
         socket.emit('deltaUpdateSend', delta);
-
     }
 
-    socket.emit()
+    // socket.emit()
 })
 
 // run when selection is changed (when cursor is moved)
