@@ -2,5 +2,10 @@ services:
   textpage:
     image: legop3/textpage:latest
     pull_policy: always
+    volumes:
+      - ./data:/usr/src/app/data:rw
+    # user: "255:255"
+    privileged: true
+    user: root
     ports:
       - 3250:3250

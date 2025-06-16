@@ -38,9 +38,9 @@ USER node
 
 
 # Expose the port that the application listens on.
-EXPOSE 3621
-EXPOSE 8888
-EXPOSE 5555
+# EXPOSE 3621
+# EXPOSE 8888
+# EXPOSE 5555
 
 # Run the application.
 CMD node main.mjs
