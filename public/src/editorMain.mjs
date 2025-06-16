@@ -75,7 +75,7 @@ socket.on('deltaUpdate', (delta) => {
 });
 
 
-socket.on('replaceDocument', (deltaList) => {
+socket.on('replaceDocument', (deltaList,callback) => { //deltaList,callback,callback2
     console.log(`document load, ${JSON.stringify(deltaList)}`)
     callback()
 })

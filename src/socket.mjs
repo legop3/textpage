@@ -112,10 +112,10 @@ async function onSocketConnect(socket) {
     console.log(`${clientSlug}: logged in signal sent`);
 
     await new Promise((ok,err)=> {
-        socket.emit('replaceDocument',ok,{
+        socket.emit('replaceDocument',{
             document:document,
             deltas:documentDeltas,
-        });
+        },ok);
     });
 
     console.log(`${clientSlug}: ready to edit`);
