@@ -30,10 +30,64 @@
   </style> -->
   
 </head>
-<body class="h-full">
 
-  <div id="editor-container" class="w-screen h-9/10 inset-0"></div>
 
+
+
+
+<body class="h-full m-0">
+
+  <div class="flex flex-col h-full">
+    <!-- Header / Toolbar -->
+    <div class="bg-gray-200 p-0" id="user-bar">
+      <!-- <h1 class="text-lg font-semibold"></h1> -->
+       <input type="text" name="" id="username" placeholder="Enter your name" class="border border-gray-300 rounded p-2 w-full max-w-xs" />
+       <input type="button" value="Set Username / Login" id="login-button" class="bg-blue-500 text-white rounded p-2 ml-2 cursor-pointer hover:bg-blue-600" />
+       <input type="button" value="Current Username: None" id="current-username" class="bg-gray-300 text-black rounded p-2 ml-2" disabled />
+       <div id="bar-extras" class="hidden">
+        <h1 class="text-lg font-semibold mt-2">Type your username above to create a new user or login</h1>
+       </div>
+    </div>
+
+    <!-- Quill Editor container -->
+    <div class="flex-1 min-h-0" id="editor-wrapper">
+      <div id="editor-container" class="h-full"></div>
+    </div>
+  </div>
+
+  <script>
+    function showLogin() {
+      const userBar = document.getElementById('user-bar');
+      const editorWrapper = document.getElementById('editor-wrapper');
+      const barExtras = document.getElementById('bar-extras');
+      // show user bar fullscreen
+      userBar.classList.add('h-full')
+      // userBar.classList.remove('hidden');
+
+      // show help text
+      barExtras.classList.remove('hidden');
+
+      // hide editor wrapper
+      editorWrapper.classList.add('hidden');
+
+    }
+
+    function hideLogin() {
+      const userBar = document.getElementById('user-bar');
+      const editorWrapper = document.getElementById('editor-wrapper');
+      const barExtras = document.getElementById('bar-extras');
+
+      // hide user bar fullscreen
+      userBar.classList.remove('h-full')
+      // userBar.classList.add('hidden');
+
+      // hide help text
+      barExtras.classList.add('hidden');
+
+      // show editor wrapper
+      editorWrapper.classList.remove('hidden');
+    }
+  </script>
 
   <script src="/reqs/quill.js"></script>
   <script src="/socket.io/socket.io.js"></script>
