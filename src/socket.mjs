@@ -41,7 +41,8 @@ async function onSocketConnect(socket) {
     socket.broadcast.emit('request-fulldoc')
 
     socket.on('fulldoc-fullfill', (fulldoc) => {
-        console.log(`fulldoc, recieved`)
+        console.log(`fulldoc recieved`)
+        socket.emit('fulldoc-push', fulldoc)
     })
 
     socket.on('deltaUpdateSend', (delta) => {

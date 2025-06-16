@@ -28,9 +28,14 @@ socket.on('init', (fulldoc) => {
 });
 
 socket.on('request-fulldoc', () => {
+    fulldocSend = quill.getContents()
+    socket.emit('fulldoc-fullfill', fulldocSend)
+    console.log(`sending fulldoc, ${fulldocSend}`)
+})
 
-    
-    console.log(`sending fulldoc`)
+socket.on('fulldoc-push', (fulldoc) => {
+    console.log('fulldoc recieved')
+    quill.setContents(fulldoc)
 })
 
 socket.on('deltaUpdate', (delta) => {
