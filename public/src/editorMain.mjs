@@ -8,10 +8,13 @@ const quill = new Quill('#editor-container', {
         toolbar: [
             [{ header: [1, 2, false] }],
             ['bold', 'italic', 'underline'],
-            ['link', 'code-block'],
+            ['link', 'code-block', 'image'],
             [{ color: [] }, { background: [] }],
             [{ list: 'ordered' }, { list: 'bullet' }],
-            ['clean']
+            ['clean'],
+            [{ 'font': []}],
+            // [{ 'direction': 'rtl '}]
+            [{'script': 'sub'}, {'script': 'super'}]
         ]
     }
 });

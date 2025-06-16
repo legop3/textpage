@@ -6,7 +6,7 @@
   <link href="/reqs/quill.snow.css" rel="stylesheet" />
   <link rel="stylesheet" href="/reqs/tailwind.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- <style>
+  <style>
     html, body {
       height: 100%;
       margin: 0;
@@ -18,16 +18,17 @@
     }
   
     .ql-container {
-      height: calc(100% - 60px); /* make room for toolbar */
+      /* height: calc(100% - 60px); make room for toolbar */
       font-size: 18px;
-      padding: 1rem;
+      padding: 0rem;
       line-height: 1.6;
     }
   
     #editor-container {
-      height: 100%;
+      height: calc(100% - 50px); 
+      /* height: 100%; */
     }
-  </style> -->
+  </style>
   
 </head>
 
@@ -41,9 +42,9 @@
     <!-- Header / Toolbar -->
     <div class="bg-gray-200 p-0" id="user-bar">
       <!-- <h1 class="text-lg font-semibold"></h1> -->
-       <input type="text" name="" id="username" placeholder="Enter your name" class="border border-gray-300 rounded p-2 w-full max-w-xs" />
-       <input type="button" value="Set Username / Login" id="login-button" class="bg-blue-500 text-white rounded p-2 ml-2 cursor-pointer hover:bg-blue-600" />
-       <input type="button" value="Current Username: None" id="current-username" class="bg-gray-300 text-black rounded p-2 ml-2" disabled />
+       <input type="text" name="" id="username" placeholder="Enter your name" class="border border-gray-300 rounded p-0 w-full max-w-xs" />
+       <input type="button" value="Set Username / Login" id="login-button" class="bg-blue-500 text-white rounded p-0 ml-2 cursor-pointer hover:bg-blue-600" />
+       <input type="button" value="Current Username: None" id="current-username" class="bg-gray-300 text-black rounded p-0 ml-2" disabled />
        <div id="bar-extras" class="hidden">
         <h1 class="text-lg font-semibold mt-2">Type your username above to create a new user or login</h1>
        </div>
@@ -53,6 +54,10 @@
     <div class="flex-1 min-h-0" id="editor-wrapper">
       <div id="editor-container" class="h-full"></div>
     </div>
+    <div class="flex items-center justify-between bg-gray-200 p-2">
+      <div id="connected-status" class="inline-flex items-center justify-center px-3 h-6 rounded-full bg-red-500 text-white text-sm">
+        Socket Disconnected
+      </div>
   </div>
 
   <script>
