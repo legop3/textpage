@@ -5,8 +5,10 @@ let Database;
 let State;
 
 const DATA_FILE = './data/fulldoc.json';
-let fulldoc
 
+// we are storing this as both the document and deltas then added onto it;
+let documentDeltas = [];
+let document = {ops:[]};
 
 export async function start(state){
     Database = state.database;
@@ -27,8 +29,8 @@ export async function start(state){
 
 async function onSocketConnect(socket) {
     const sessionid = sessionIDCounter++;
-    let clientSlug = `nobody@socket${sessionid}`;
-    let userid = null;
+    let clientSlug = `notready@socket${sessionid}`;
+    let userid = null //Config.users.default_user_id;
 
     console.log(`${clientSlug}: connected`);
 
@@ -36,7 +38,7 @@ async function onSocketConnect(socket) {
         console.log(`${clientSlug}: disconnected`)
     })
 
-    // --- sequenced login process below this line
+    // --- sequenced login process below this line//id:userid,
 
 
     while (userid === null){
@@ -48,22 +50,60 @@ async function onSocketConnect(socket) {
 
         console.log(`${clientSlug}: got cookie: ${cookie}`);
 
-        let {userid:_userid} = await Database.getSingle('SELECT userid from cookies where cookie = ? limit 1',cookie)
+        let cookieUid = await Database.getSingle('SELECT userid from cookies where cookie = ? limit 1',cookie);
+        let _userid;
+        if(cookieUid){
+            _userid = cookieUid.userid;
+        } else {
+
+        }
 
         if (_userid) {
-            clientSlug =
             console.log(`${clientSlug}: cookie was valid`);
             userid = _userid;
             continue;
         }
 
-        //TODO create/connect account to cookie
-        console.log("cookie is not coonnected to account, mindlessly trying again");
+        console.log("cookie is not registered, logging in as default_user");
+        await Database.getSingle('INSERT into cookies(cookie,userid) values(?,?)',cookie,Config.users.default_user_id);
+
+
 
     }
 
-    let {displayName,handle,bio} = await Database.getSingle('SELECT displayName,handle,bio from Users where id = ? limit 1',id);
+    let loginData
+    while (true){
+        loginData = await Database.getSingle('SELECT displayName,handle,bio from Users where id = ? limit 1',userid);
+        if(!loginData){
 
+            // we REALLY should not be recovering from this error, but oh well
+            console.error(`client "${clientSlug}" was able to connect to non-existant user (id ${userid})! forcing them to login as default_user`);
+            userid = Config.users.default_user_id;
+            continue;
+        };
+        break;
+    }
+
+
+    let {displayName,handle,bio} = loginData;
+    clientSlug = `${handle}@socket${sessionid}`;
+    console.log(`${clientSlug}: logged in: ${displayName}`);
+
+    // --- register commands below this line
+
+
+    // commands go here...
+
+    socket.on('deltaUpdateSend', (delta) => {
+        console.log(`${clientSlug}: delta recieved: ${JSON.stringify(delta)}`)
+        documentDeltas.push(delta);
+        socket.broadcast.emit('deltaUpdate', delta)
+    });
+
+    // --- register commands above this line
+
+    // logged in as either their account or anonimous
+    // can make database changes now
     await new Promise((ok,err)=> {
         socket.emit('logged_in',ok,{
             //id:userid,
@@ -71,18 +111,14 @@ async function onSocketConnect(socket) {
         });
     });
 
+    console.log(`${clientSlug}: logged in signal sent`);
 
-
-    // --- register commands below this line
-
-    // commands go here...
-
-    socket.on('deltaUpdateSend', (delta) => {
-        console.log(`${clientSlug}: delta recieved: ${JSON.stringify(delta)}`)
-        socket.broadcast.emit('deltaUpdate', delta)
+    await new Promise((ok,err)=> {
+        socket.emit('replaceDocument',ok,{
+            document:document,
+            deltas:documentDeltas,
+        });
     });
 
-    // --- register commands above this line
-    socket.broadcast.emit('accepting_commands');
-
+    console.log(`${clientSlug}: ready to edit`);
 }

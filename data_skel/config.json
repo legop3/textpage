@@ -11,5 +11,13 @@
     },
     "filepaths":{
         "database":"data/database.db"
-    }
+    },
+    "users":{
+        "default_user":"anon",
+        "TODO:disallowed_handles":["notready","anon"],
+        "auto_create":{
+            "anon":{"displayName":"Anonimous"}
+        }
+    },
+    "sql_autorun":[]
 }

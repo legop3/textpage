@@ -20,6 +20,30 @@ export class AppDatabase {
             );`);
 
             await upgradeDatabase(this);
+
+            const autocreator = Config.users.auto_create;
+            for (const handle in autocreator){
+                let loginData = await this.getSingle('SELECT id from Users where handle = ? limit 1',handle);
+                if (loginData){
+                    console.log(`user.auto_create: exists: (${loginData.id}) ${handle}`);
+                } else {
+                    console.log(`user.auto_create: creating: ${handle}`);
+                    let {bio,displayName} = autocreator[handle];
+                    bio = bio || "";
+                    displayName = displayName || handle;
+                    await this.getSingle('insert into users(handle,bio,displayName) values(?,?,?)',handle,bio,displayName);
+                }
+            }
+
+            let loginData = await this.getSingle('SELECT id,displayName,handle,bio from Users where handle = ? limit 1',Config.users.default_user);
+            if (loginData){
+                console.log(`the deafult user is: (${loginData.id}) ${loginData.handle}, ${loginData.displayName}`);
+                Config.users.default_user_id = loginData.id;
+            } else {
+                console.error(`the deafult user does not exist\ncannot start server!`);
+                process.exit(1);
+            }
+
             return this;
         })();
     }
