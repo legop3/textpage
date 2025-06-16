@@ -104,11 +104,9 @@ async function onSocketConnect(socket) {
 
     // logged in as either their account or anonimous
     // can make database changes now
-    await new Promise((ok,err)=> {
-        socket.emit('logged_in',ok,{
-            //id:userid,
-            displayName,handle,bio
-        });
+    socket.emit('logged_in',{
+        //id:userid,
+        displayName,handle,bio
     });
 
     console.log(`${clientSlug}: logged in signal sent`);
