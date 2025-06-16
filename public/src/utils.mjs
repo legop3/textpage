@@ -9,3 +9,4 @@ export function getCookie(name) {
     }
     return null; // Return null if not found
 }
+
