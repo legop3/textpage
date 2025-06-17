@@ -61,8 +61,10 @@
 
     
     .ql-formats {
-      background-color: white;
+      background-color: rgb(249, 229, 255);
       border-radius: 12px;
+      /* background-blend-mode:hard-light; */
+      
     }
   
     .ql-editor {
@@ -145,8 +147,14 @@
       <!-- <div id="quill-toolbar"></div> -->
         <!-- Custom Toolbar -->
     <!-- <div class="relative"> -->
-    <div id="quill-toolbar" class="overflow-x-auto whitespace-nowrap toolbar-scrollbar position-relative overflow-visible" style="background-image: url('/img/barbackground.png');">
-    <div id="incoming-status" class="top-10 right-1 fixed opacity-25">(((())))</div>
+
+    <!-- dots bg -->
+    <!-- <div id="quill-toolbar" class="overflow-x-auto whitespace-nowrap toolbar-scrollbar position-relative overflow-visible" style="background-image: url('/img/barbackground.png');"> -->
+      
+    <!-- no bg -->
+    <div id="quill-toolbar" class="overflow-x-auto whitespace-nowrap toolbar-scrollbar position-relative overflow-visible" style="">
+    
+      <div id="incoming-status" class="top-10 right-1 fixed opacity-25">(((())))</div>
 
 
       <div class="inline-flex items-center space-x-1 overflow-visible">
@@ -230,7 +238,13 @@
     <!-- <div id="editor-container" class="h-max" style="background-image: url('/img/backgroundanim.gif'); background-size: tile; background-position: center; background-blend-mode:difference; background-color: rgb(255, 255, 255);"> -->
     
     <!-- stars bg -->
-    <div id="editor-container" class="h-max" style="background-image: url('/img/sparsebg.png'); background-size: tile; background-position: center;">
+    <!-- <div id="editor-container" class="h-max" style="background-image: url('/img/sparsebg.png'); background-size: tile; background-position: center;"> -->
+      
+    <!-- lavender bg -->
+    <!-- <div id="editor-container" class="h-max" style="background-color: rgb(255, 245, 255);"> -->
+      
+    <!-- no bg -->
+    <div id="editor-container" class="h-max" style="">
 
       <!-- <div id="quill-editor" class="ql-container ql-snow h-full">
         <div class="ql-editor" data-gramm="false" contenteditable="true" spellcheck="false"></div>
