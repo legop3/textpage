@@ -3,14 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <title>Textpage</title>
+
   <link href="/reqs/quill.snow.css" rel="stylesheet" />
   <link rel="stylesheet" href="/reqs/tailwind.min.css">
+
+
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <meta name="tile" content="Textpage" />
-  <meta name="description" content="A globally collaborative text editor with real-time syncing." />
+  <meta name="description" content="The globally collaborative text editor." />
   <meta name="keywords" content="text editor, collaborative, real-time, sync, quill, tailwind" />
-  <meta name="author" content="Textpage devteam" />
+  <meta name="author" content="Textpage Devteam" />
   <meta name="theme-color" content="#ffffff" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -45,6 +49,7 @@
       position: fixed;
       width: 100%;
       top: 0;
+      overflow: visible;
     }
 
     .ql-toolbar .ql-formats {
@@ -53,6 +58,8 @@
       gap: 0.25rem; /* optional spacing between buttons */
       vertical-align: middle;
     }
+
+    
 
   
     .ql-editor {
@@ -71,6 +78,18 @@
       /* display:contents; */
       padding-bottom: 4rem; /* Adjusted to account for the footer */
       padding-top: 4rem;
+      z-index: 1;
+      overflow: visible;
+    }
+
+    .ql-picker-options {
+      z-index: 20 !important;
+      /* display: inline-flex !important; */
+      /* flex-wrap: nowrap !important; */
+      /* background-color: tomato; */
+      position: absolute !important;
+      overflow: visible !important;
+      outline: 2px dashed red
     }
 
     .toolbar-scrollbar {
@@ -98,7 +117,7 @@
 
 
 
-<body class="h-full m-0">
+<body class="h-full m-0 overflow-visible">
 
   <div id="overlay" class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 hidden">
     <div class="bg-gray-200 p-6 w-full max-w-md rounded-lg shadow-lg" id="user-bar">
@@ -114,7 +133,7 @@
   </div>
   
 
-  <div class="flex flex-col h-full">
+  <div class="flex flex-col h-full overflow-visible">
     <!-- Header / Toolbar -->
 
 
@@ -123,7 +142,7 @@
       <!-- <div id="quill-toolbar"></div> -->
         <!-- Custom Toolbar -->
     <!-- <div class="relative"> -->
-    <div id="quill-toolbar" class="overflow-x-auto whitespace-nowrap toolbar-scrollbar">
+    <div id="quill-toolbar" class="overflow-x-visible overflow-visible whitespace-nowrap toolbar-scrollbar z-50">
   <div id="incoming-status" class="top-10 right-1 fixed opacity-25">(((())))</div>
 
 
@@ -205,7 +224,7 @@
   <!-- </div> -->
 
 
-    <div id="editor-container" class="h-max">
+    <div id="editor-container" class="h-max overflow-visible">
 
     </div>
     <!-- </div> -->
@@ -245,5 +264,8 @@
   <script src="/reqs/quill.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script type="module" src="/src/editorMain.mjs"></script>
+  <script src="/reqs/image-resize.min.js"></script>
+   <!-- <script src="/reqs/quill-blot-formatter.min.js"></script> -->
+   
 </body>
 </html>

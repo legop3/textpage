@@ -4,9 +4,30 @@ const socket = io();
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+Quill.register('modules/imageResize', window.ImageResize.default);
+// Quill.register("modules/htmlEditButton", htmlEditButton);
+
+// Quill.register('modules/blotFormatter', QuillBlotFormatter.default)
+
 const quill = new Quill('#editor-container', {
     theme: 'snow',
     modules: {
+
+        //new blotformatter
+        // blotFormatter: {
+
+        // },
+
+        //old imageresize
+        imageResize: {
+            modules: ['Resize', 'DisplaySize']
+        },
+        // htmlEditButton: {
+        //     syntax: false
+        // },
+
+
+
         // toolbar: [
         //     [{ header: [1, 2, false] }],
         //     ['bold', 'italic', 'underline'],
