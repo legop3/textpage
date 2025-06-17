@@ -13,7 +13,7 @@ Quill.register('modules/imageResize', window.ImageResize.default);
 function gleanStyleFromDocument(){
     if(true){
         let bgTag = document.querySelector('a[href="#background"]')
-        if (bgTag.nextElementSibling){
+        if (bgTag && bgTag.nextElementSibling){
             document.querySelector('#editor-container').style.background = 'url(\"' + (bgTag.nextElementSibling.src || "") + "\")"
         }
     }
