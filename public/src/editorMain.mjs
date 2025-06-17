@@ -9,6 +9,16 @@ Quill.register('modules/imageResize', window.ImageResize.default);
 
 // Quill.register('modules/blotFormatter', QuillBlotFormatter.default)
 
+
+function gleanStyleFromDocument(){
+    if(true){
+        let bgTag = document.querySelector('a[href="#background"]')
+        if (bgTag.nextElementSibling){
+            document.querySelector('#editor-container').style.background = 'url(\"' + (bgTag.nextElementSibling.src || "") + "\")"
+        }
+    }
+}
+
 const quill = new Quill('#editor-container', {
     theme: 'snow',
     modules: {
@@ -164,6 +174,9 @@ socket.on('replaceDocument', async (deltaList, callback) => {
     requestAnimationFrame(() => {
         syncStatus.innerHTML = 'Synced!';
         syncStatus.classList.replace('bg-yellow-500', 'bg-blue-300');
+
+        gleanStyleFromDocument();
+
     });
 
     callback();
